@@ -2,7 +2,8 @@ import allure
 import requests
 import random
 import string
-from utils import BASE_URL
+from urls import AUTH_URL
+from data_text import USER_UPDATE_RESP
 from typing import Dict, Any
 
 def generate_random_name() -> str:
@@ -25,7 +26,7 @@ class TestUserUpdate:
         }
         
         response = requests.patch(
-            f"{BASE_URL}/auth/user",
+            f"{AUTH_URL}",
             json=payload,
             headers={"Authorization": registered_user["token"]}
         )
@@ -47,7 +48,7 @@ class TestUserUpdate:
         payload: Dict[str, str] = {"email": new_email}
         
         response = requests.patch(
-            f"{BASE_URL}/auth/user",
+            f"{AUTH_URL}",
             json=payload,
             headers={"Authorization": registered_user["token"]}
         )
@@ -70,7 +71,7 @@ class TestUserUpdate:
         }
         
         response = requests.patch(
-            f"{BASE_URL}/auth/user",
+            f"{AUTH_URL}",
             json=payload
         )
         
@@ -80,4 +81,4 @@ class TestUserUpdate:
         # Проверяем тело ответа
         json_response: Dict[str, Any] = response.json()
         assert json_response["success"] is False
-        assert json_response["message"] == "You should be authorised"
+        assert json_response["message"] == USER_UPDATE_RESP

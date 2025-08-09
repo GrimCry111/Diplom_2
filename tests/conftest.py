@@ -2,13 +2,9 @@ import sys
 from pathlib import Path
 import pytest
 import requests
-
-# Добавляем директорию tests в PYTHONPATH
-# Это критически важно для корректной работы импортов
+from urls import AUTH_URL
 sys.path.insert(0, str(Path(__file__).parent))
-
-# Теперь можем импортировать utils без точки
-from utils import create_user, BASE_URL
+from api_methods import create_user, get_ingredients
 
 @pytest.fixture
 def registered_user():
@@ -18,7 +14,7 @@ def registered_user():
     # Удаляем пользователя после теста
     if user_data and "token" in user_data:
         requests.delete(
-            f"{BASE_URL}/auth/user",
+            f"{AUTH_URL}",
             headers={"Authorization": user_data["token"]}
         )
 
@@ -30,5 +26,4 @@ def auth_token(registered_user):
 @pytest.fixture
 def ingredients():
     """Фикстура для получения списка ингредиентов"""
-    from utils import get_ingredients
     return get_ingredients()

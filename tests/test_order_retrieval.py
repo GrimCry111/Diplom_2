@@ -2,7 +2,8 @@ import pytest
 import allure
 import requests
 from typing import Dict, Any, List
-from utils import BASE_URL
+from urls import ORDERS_URL
+from data_text import ORDER_RETRIEVEL_RESP
 
 @allure.feature('Order Management')
 @allure.story('Order Retrieval')
@@ -21,7 +22,7 @@ class TestOrderRetrieval:
         # Сначала создаем заказ для пользователя с валидными ингредиентами
         ingredient_ids = [ing["_id"] for ing in ingredients[:2]]
         response = requests.post(
-            f"{BASE_URL}/orders",
+            f"{ORDERS_URL}",
             json={"ingredients": ingredient_ids},
             headers={"Authorization": registered_user["token"]}
         )
@@ -31,7 +32,7 @@ class TestOrderRetrieval:
         
         # Теперь получаем список заказов
         response = requests.get(
-            f"{BASE_URL}/orders",
+            f"{ORDERS_URL}",
             headers={"Authorization": registered_user["token"]}
         )
         
@@ -49,7 +50,7 @@ class TestOrderRetrieval:
     @allure.title('Получение заказов неавторизованным пользователем')
     @allure.description('Проверка блокировки доступа к заказам без авторизации')
     def test_get_orders_without_auth(self) -> None:
-        response = requests.get(f"{BASE_URL}/orders")
+        response = requests.get(f"{ORDERS_URL}")
         
         # Проверяем статус-код
         assert response.status_code == 401, f"Ожидался статус 401, получен {response.status_code}"
@@ -57,4 +58,4 @@ class TestOrderRetrieval:
         # Проверяем тело ответа
         json_response: Dict[str, Any] = response.json()
         assert json_response["success"] is False
-        assert json_response["message"] == "You should be authorised"
+        assert json_response["message"] == ORDER_RETRIEVEL_RESP

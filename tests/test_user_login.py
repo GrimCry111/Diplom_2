@@ -1,7 +1,9 @@
 import pytest
 import allure
 import requests
-from utils import generate_unique_email, BASE_URL
+from utils import generate_unique_email
+from urls import LOGIN_URL
+from data_text import USER_LOGIN_PESP
 
 @allure.feature('User Management')
 @allure.story('User Login')
@@ -15,7 +17,7 @@ class TestUserLogin:
             "password": registered_user["password"]
         }
         
-        response = requests.post("https://stellarburgers.nomoreparties.site/api/auth/login", json=payload)
+        response = requests.post(f"{LOGIN_URL}", json=payload)
         
         # Проверяем статус-код
         assert response.status_code == 200, f"Ожидался статус 200, получен {response.status_code}"
@@ -40,7 +42,7 @@ class TestUserLogin:
             "password": password
         }
         
-        response = requests.post("https://stellarburgers.nomoreparties.site/api/auth/login", json=payload)
+        response = requests.post(f"{LOGIN_URL}", json=payload)
         
         # Проверяем статус-код
         assert response.status_code == 401, f"Ожидался статус 401, получен {response.status_code}"
@@ -48,4 +50,4 @@ class TestUserLogin:
         # Проверяем тело ответа
         json_response = response.json()
         assert json_response["success"] is False
-        assert json_response["message"] == "email or password are incorrect"
+        assert json_response["message"] == USER_LOGIN_PESP

@@ -2,7 +2,9 @@ import pytest
 import allure
 import requests
 from typing import Dict, Any
-from utils import generate_unique_email, BASE_URL
+from utils import generate_unique_email
+from urls import  REGIST_URL, AUTH_URL
+from data_text import USER_REGISTRATION_RESP
 
 @allure.feature('User Management')
 @allure.story('User Registration')
@@ -18,7 +20,7 @@ class TestUserRegistration:
             "name": "Test User"
         }
         
-        response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+        response = requests.post(f"{REGIST_URL}", json=payload)
         
         # Проверяем статус-код
         assert response.status_code == 200, f"Ожидался статус 200, получен {response.status_code}"
@@ -36,7 +38,7 @@ class TestUserRegistration:
         # Удаляем созданного пользователя
         token = json_response["accessToken"]
         requests.delete(
-            f"{BASE_URL}/auth/user",
+            f"{AUTH_URL}",
             headers={"Authorization": token}
         )
     
@@ -50,7 +52,7 @@ class TestUserRegistration:
             "name": registered_user["name"]
         }
         
-        response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+        response = requests.post(f"{REGIST_URL}", json=payload)
         
         # Проверяем статус-код
         assert response.status_code == 403, f"Ожидался статус 403, получен {response.status_code}"
@@ -58,7 +60,7 @@ class TestUserRegistration:
         # Проверяем тело ответа
         json_response: Dict[str, Any] = response.json()
         assert json_response["success"] is False
-        assert json_response["message"] == "User already exists"
+        assert json_response["message"] == USER_REGISTRATION_RESP
     
     @allure.title('Создание пользователя без одного обязательного поля')
     @allure.description('Проверка обработки запроса с отсутствующим email')
@@ -74,7 +76,7 @@ class TestUserRegistration:
         # Удаляем одно обязательное поле
         payload.pop(missing_field)
         
-        response = requests.post(f"{BASE_URL}/auth/register", json=payload)
+        response = requests.post(f"{REGIST_URL}", json=payload)
         
         # Проверяем статус-код
         assert response.status_code == 403, f"Ожидался статус 403, получен {response.status_code}"

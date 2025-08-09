@@ -2,7 +2,8 @@ import pytest
 import allure
 import requests
 from typing import Dict, Any, List
-from utils import BASE_URL
+from urls import ORDERS_URL
+from data_text import ORDER_CREATE_RESP
 
 @allure.feature('Order Management')
 @allure.story('Order Creation')
@@ -24,7 +25,7 @@ class TestOrderCreation:
         payload = {"ingredients": ingredient_ids}
         
         response = requests.post(
-            f"{BASE_URL}/orders",
+            f"{ORDERS_URL}",
             json=payload,
             headers={"Authorization": registered_user["token"]}
         )
@@ -55,7 +56,7 @@ class TestOrderCreation:
         payload = {"ingredients": ingredient_ids}
         
         response = requests.post(
-            f"{BASE_URL}/orders",
+            f"{ORDERS_URL}",
             json=payload
         )
         
@@ -74,7 +75,7 @@ class TestOrderCreation:
         payload = {"ingredients": []}
         
         response = requests.post(
-            f"{BASE_URL}/orders",
+            f"{ORDERS_URL}",
             json=payload,
             headers={"Authorization": registered_user["token"]}
         )
@@ -85,7 +86,7 @@ class TestOrderCreation:
         # Проверяем тело ответа
         json_response: Dict[str, Any] = response.json()
         assert json_response["success"] is False
-        assert json_response["message"] == "Ingredient ids must be provided"
+        assert json_response["message"] == ORDER_CREATE_RESP
     
     @allure.title('Создание заказа с неверным хешем ингредиентов')
     @allure.description('Проверка обработки заказа с несуществующими ингредиентами')
@@ -95,7 +96,7 @@ class TestOrderCreation:
         payload = {"ingredients": invalid_ids}
         
         response = requests.post(
-            f"{BASE_URL}/orders",
+            f"{ORDERS_URL}",
             json=payload,
             headers={"Authorization": registered_user["token"]}
         )
