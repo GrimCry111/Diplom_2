@@ -22,8 +22,3 @@ def registered_user():
 def auth_token(registered_user):
     """Фикстура для получения токена авторизации"""
     return registered_user["token"] if registered_user else None
-
-@pytest.fixture
-def ingredients():
-    """Фикстура для получения списка ингредиентов"""
-    return get_ingredients()

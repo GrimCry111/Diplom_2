@@ -1,7 +1,8 @@
 import pytest
 import allure
 import requests
-from typing import Dict, Any, List
+from typing import Dict, Any
+from api_methods import get_ingredients
 from urls import ORDERS_URL
 from data_text import ORDER_CREATE_RESP
 
@@ -14,8 +15,9 @@ class TestOrderCreation:
     def test_create_order_with_auth_and_ingredients(
         self, 
         registered_user: Dict[str, Any],
-        ingredients: List[Dict[str, Any]]
     ) -> None:
+        ingredients = get_ingredients()
+
         if not ingredients:
             pytest.skip("Нет доступных ингредиентов для теста")
         
@@ -47,7 +49,10 @@ class TestOrderCreation:
     
     @allure.title('Создание заказа без авторизации')
     @allure.description('Проверка блокировки создания заказа неавторизованным пользователем')
-    def test_create_order_without_auth(self, ingredients: List[Dict[str, Any]]) -> None:
+    def test_create_order_without_auth(self) -> None:
+
+        ingredients = get_ingredients()
+
         if not ingredients:
             pytest.skip("Нет доступных ингредиентов для теста")
         

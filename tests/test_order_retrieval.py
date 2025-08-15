@@ -1,7 +1,8 @@
 import pytest
 import allure
 import requests
-from typing import Dict, Any, List
+from typing import Dict, Any
+from api_methods import get_ingredients
 from urls import ORDERS_URL
 from data_text import ORDER_RETRIEVEL_RESP
 
@@ -14,8 +15,9 @@ class TestOrderRetrieval:
     def test_get_orders_with_auth(
         self, 
         registered_user: Dict[str, Any],
-        ingredients: List[Dict[str, Any]]
     ) -> None:
+        ingredients = get_ingredients()
+
         if not ingredients:
             pytest.skip("Нет доступных ингредиентов для теста")
         

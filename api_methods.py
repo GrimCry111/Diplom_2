@@ -26,7 +26,7 @@ def create_user() -> Optional[Dict[str, Any]]:
             "token": response.json()["accessToken"],
             "response": response
         }
-    return None
+    return
 
 @allure.step("Получение списка ингредиентов через API")
 def get_ingredients() -> List[Dict[str, Any]]:
